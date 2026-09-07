@@ -57,6 +57,6 @@ python pipeline/1_extract.py && python pipeline/2_enrich.py && python pipeline/5
 - `data/audio/`（约 10197 个 mp3）由 `pipeline/4_tts.py` 按例句哈希生成，不入库，可随时重跑
 - 学习记录在 `data/progress.db`（gitignore），每日自动备份到 `data/backups/`
 
-## 隐私
+## 数据来源
 
-本仓库为**私有**。`data/senses.json` 等文件含《Volka English 3000》教材的完整提取内容，仅作个人学习备份，请勿公开或分发。
+`data/senses.json`、`data/word_senses.json` 等文件由 `pipeline/` 从《Volka English 3000》教材自动提取，供个人学习与技术研究之用。教材版权归原作者与出版社所有；如需商业使用，请另行取得授权。
