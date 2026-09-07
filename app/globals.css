@@ -1,0 +1,293 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   1 · Palette tokens (PLAN §5.5)
+
+   Hex literals live ONLY in this file. Everything else consumes var(--token)
+   or a Tailwind utility generated from the @theme block below.
+
+   The dark side stays in the warm-grey #1c1917 family — never pure black,
+   never a cold blue-grey — so both modes read as the same product.
+--------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  --paper: #f7f1e7;
+  --panel: #fffbf2;
+  --panel-strong: #ffffff;
+  --ink: #211c18;
+  --muted: #6f645b;
+  --line: #dfd0bf;
+  --accent: #0f766e;
+  --accent-ink: #ecfeff;
+  --amber: #b7791f;
+  --rose: #a43f50;
+  --blue: #2f6f9f;
+  --shadow: 0 24px 70px rgba(55, 39, 23, 0.12);
+
+  /* Body wash, tokenised so the gradient flips with the mode. */
+  --wash-accent: rgba(15, 118, 110, 0.08);
+  --wash-amber: rgba(183, 121, 31, 0.1);
+
+  /* 8-topic chart palette — OKLCH hues 28 62 96 145 196 248 292 334,
+     chroma <= 0.145, lightness alternating 0.60 / 0.51.
+     Contrast vs --paper: 3.37:1 … 5.55:1 (all >= 3:1, WCAG 1.4.11). */
+  --chart-1: #c8584d;
+  --chart-2: #945401;
+  --chart-3: #967f02;
+  --chart-4: #1c7a2a;
+  --chart-5: #089294;
+  --chart-6: #0169b0;
+  --chart-7: #836dcf;
+  --chart-8: #954088;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --paper: #171412;
+  --panel: #211d19;
+  --panel-strong: #29241f;
+  --ink: #f5eadc;
+  --muted: #c0b3a5;
+  --line: #473d33;
+  --accent: #5eead4;
+  --accent-ink: #092f2c;
+  --amber: #f2c46d;
+  --rose: #f19aab;
+  --blue: #8cc8f2;
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
+
+  --wash-accent: rgba(94, 234, 212, 0.06);
+  --wash-amber: rgba(242, 196, 109, 0.05);
+
+  /* Same hues and the same lighter/darker rhythm as the light set, lifted to
+     OKLCH lightness 0.83 / 0.74 so a chart keeps its identity across modes.
+     Contrast vs --panel: 6.85:1 … 10.39:1. */
+  --chart-1: #feb0a6;
+  --chart-2: #e39851;
+  --chart-3: #dfc761;
+  --chart-4: #76c078;
+  --chart-5: #47e0e2;
+  --chart-6: #66b1f6;
+  --chart-7: #c8bdfe;
+  --chart-8: #da8ccb;
+}
+
+/* ---------------------------------------------------------------------------
+   2 · Tailwind theme
+
+   `@theme inline` maps the mode-aware custom properties above onto Tailwind's
+   colour namespace, so `bg-panel` / `text-muted` / `fill-chart-3` all follow
+   the .dark class automatically.
+
+   The type scale is PLAN §5.5: example sentence 26px, headword 32px,
+   gloss 16px, meta 12px. Expressed in rem so browser font scaling still works.
+--------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-panel-strong: var(--panel-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-tone-amber: var(--amber);
+  --color-tone-rose: var(--rose);
+  --color-tone-blue: var(--blue);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
+}
+
+@theme {
+  --font-sans: "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+
+  /* 12px — timestamps, level chips, table meta */
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.5;
+  /* 15px — UI body copy */
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+  /* 16px — 中文释义 / gloss, must stay comfortable at arm's length */
+  --text-gloss: 1rem;
+  --text-gloss--line-height: 1.65;
+  /* 20px — section titles */
+  --text-section: 1.25rem;
+  --text-section--line-height: 1.4;
+  /* 26px — example sentence, sized to be scanned during shadowing */
+  --text-example: 1.625rem;
+  --text-example--line-height: 1.45;
+  /* 32px — headword */
+  --text-headword: 2rem;
+  --text-headword--line-height: 1.15;
+  /* 40px — the single big number on a page (streak, day, due count) */
+  --text-display: 2.5rem;
+  --text-display--line-height: 1.05;
+
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Motion durations (PLAN §5.6). Not a Tailwind namespace — read via var(). */
+:root {
+  --motion-card: 180ms;
+  --motion-bar: 300ms;
+  --motion-scene: 500ms;
+  --ring: color-mix(in srgb, var(--accent), transparent 35%);
+}
+
+/* ---------------------------------------------------------------------------
+   3 · Base layer
+--------------------------------------------------------------------------- */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-color: color-mix(in srgb, var(--line), transparent 20%) transparent;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+      linear-gradient(115deg, var(--wash-accent), transparent 34%),
+      linear-gradient(245deg, var(--wash-amber), transparent 38%),
+      var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent), transparent 75%);
+    color: var(--ink);
+  }
+
+  button,
+  a,
+  summary {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  dialog::backdrop {
+    background: color-mix(in srgb, var(--paper), transparent 25%);
+    backdrop-filter: blur(2px);
+  }
+
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   4 · Motion (PLAN §5.6)
+
+   Transform + opacity only. Never width/height/top/left — those force layout
+   and cannot be interrupted cheaply. 150–200ms, ease-out.
+--------------------------------------------------------------------------- */
+
+@keyframes vs-rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes vs-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes vs-pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.vs-rise-in {
+  animation: vs-rise-in var(--motion-card) var(--ease-out-soft) both;
+}
+
+.vs-fade-in {
+  animation: vs-fade-in var(--motion-card) var(--ease-out-soft) both;
+}
+
+.vs-pulse-soft {
+  animation: vs-pulse-soft 1.6s var(--ease-out-soft) infinite;
+}
+
+/* Interruptible hover lift for cards and card-shaped links. */
+.vs-lift {
+  transition:
+    transform var(--motion-card) var(--ease-out-soft),
+    box-shadow var(--motion-card) var(--ease-out-soft),
+    border-color var(--motion-card) var(--ease-out-soft);
+  will-change: transform;
+}
+
+.vs-lift:hover {
+  transform: translate3d(0, -2px, 0);
+}
+
+/* ---------------------------------------------------------------------------
+   5 · prefers-reduced-motion — one query, neutralises everything (PLAN §5.1.10)
+   1ms rather than 0s so `transitionend` / `animationend` still fire.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  *,
+  *::before,
+  *::after,
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  .vs-lift:hover {
+    transform: none;
+  }
+}

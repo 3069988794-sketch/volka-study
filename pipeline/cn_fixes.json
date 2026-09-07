@@ -1,0 +1,129 @@
+{
+ "_readme": [
+  "Curator overrides for the Chinese translation layer, applied by merge_cn_translations.py after the bulk shards.",
+  "Keyed by permanent sense_id. Only the fields present are patched; omit a field to keep the bulk value.",
+  "Every entry needs a reason. Most entries come from pipeline/qa_cn.py findings.",
+  "This layer is the reason review findings survive a cache reset: empty cn_translations.json, re-merge, corrections come back."
+ ],
+ "fixes": {
+  "s000847": {
+   "gloss_cn": "活动（自己找乐子做的事）",
+   "reason": "与同 headword 的 s000848 撞车。原书把 activity 的 A1/A2 两个义项分成「消遣」和「组织起来的活动」，中文都译作「活动」就分不开了。这条是个人消遣。"
+  },
+  "s000848": {
+   "gloss_cn": "活动（多人一起组织的）",
+   "reason": "与 s000847 撞车。这条是有组织的集体活动，加括注区分。"
+  },
+  "s000908": {
+   "gloss_cn": "在……之间（后面接两者）",
+   "reason": "与 s000910 撞车。这条是介词，后面必须带宾语（between A and B）；括注点出这个用法差别。"
+  },
+  "s000910": {
+   "gloss_cn": "夹在中间（单独使用）",
+   "reason": "与 s000908 撞车。这条是副词 in between，单独用、后面不接宾语。"
+  },
+  "s002607": {
+   "gloss_cn": "世纪（一百年这个时间单位）",
+   "reason": "与 s002608 撞车。原书两条 gloss_en 几乎同义，差别只在一条讲时间长度、一条讲历史断代。这条是时间单位。"
+  },
+  "s002608": {
+   "gloss_cn": "世纪（用来纪年的那个世纪）",
+   "reason": "与 s002607 撞车。这条用于历史断代（十八世纪）。"
+  },
+  "s000746": {
+   "gloss_cn": "例子（能代表整体的样本）",
+   "reason": "与 s000747 撞车。这条是「有代表性的样本」，例句里照片代表作品水平。"
+  },
+  "s000747": {
+   "gloss_cn": "例子（用来讲清道理的）",
+   "reason": "与 s000746 撞车。这条是「为说明而举的例」。"
+  },
+  "s000754": {
+   "gloss_cn": "信息（自己去打听来的）",
+   "reason": "与 s000755 撞车。这条是主动获取（I need information about…）。"
+  },
+  "s000755": {
+   "gloss_cn": "信息（别人告知的）",
+   "reason": "与 s000754 撞车。这条是被动获得（They gave us information）。"
+  },
+  "s000735": {
+   "example_cn": "在「in the morning」这个短语里，主要的词是「morning」。",
+   "reason": "例句本身就是在讲一个英语短语的结构，把 in the morning / morning 译成中文这句话就没有意义了。保留英文原词，但加中文引号，让它在界面上明确是被引用的对象而不是漏译。"
+  },
+  "s000819": {
+   "example_cn": "在「She likes cake」这句里，「cake」是宾语。",
+   "reason": "和 s000735 同类：例句在讲英语句子的成分，译掉 She likes cake 就没法说明 cake 是宾语了。补中文引号，明确是引用而非漏译。"
+  },
+  "s000752": {
+   "gloss_cn": "事实（能证实的事情）",
+   "reason": "与 s000753 撞车。这条 A1，强调「可以被证明是真的」。"
+  },
+  "s000753": {
+   "gloss_cn": "事实（与看法相对）",
+   "reason": "与 s000752 撞车。这条 B1，重点在事实 vs 意见的对立（facts not opinions）。"
+  },
+  "s003098": {
+   "gloss_cn": "高度（东西有多高）",
+   "reason": "与 s003099 撞车。这条问的是物体本身的高矮（how tall）。"
+  },
+  "s003099": {
+   "gloss_cn": "高度（离地面多高）",
+   "reason": "与 s003098 撞车。这条是离地面/某个面的距离（飞机在六千米高度）。"
+  },
+  "s003910": {
+   "gloss_cn": "法律（整套法律制度）",
+   "reason": "与 s003911 撞车。这条是不可数的 the law，指整个法律体系（against the law）。"
+  },
+  "s003911": {
+   "gloss_cn": "法律（一条具体法令）",
+   "reason": "与 s003910 撞车。这条可数，指政府定的某一条法（new laws）。"
+  },
+  "s001488": {
+   "gloss_cn": "便宜的（价格低）",
+   "reason": "与 s001490 撞车。这条是形容词，修饰名词（a cheap hat）。"
+  },
+  "s001490": {
+   "gloss_cn": "便宜地（价格低廉）",
+   "reason": "与 s001488 撞车。这条是副词，修饰动词（got the tickets cheap）。"
+  },
+  "s003617": {
+   "gloss_cn": "收藏（作为爱好）",
+   "reason": "与 s003618 撞车。这条是 hobby-collect（收集硬币），用「收藏」更准确。"
+  },
+  "s004751": {
+   "gloss_cn": "匆忙（动词：赶紧走）",
+   "reason": "与 s004753 撞车。这条是动词 hurry（匆忙去做某事）。"
+  },
+  "s004753": {
+   "gloss_cn": "匆忙（名词：着急的状态）",
+   "reason": "与 s004751 撞车。这条是名词 a hurry（匆忙的状态）。"
+  },
+  "s003670": {
+   "gloss_cn": "膝盖（腿弯曲的地方）",
+   "reason": "与 s003671 撞车。这条是膝关节。"
+  },
+  "s003671": {
+   "gloss_cn": "大腿（坐着时的上腿部）",
+   "reason": "与 s003670 撞车。这条是大腿部分。"
+  }
+ },
+ "_accepted_readme": [
+  "已人工复核、确认可接受的 qa_cn.py 报警，按 sense_id -> codes 记录。",
+  "qa_cn.py 会把这些 finding 从 BLOCKING 降为 WARN 并标 (accepted)，不会隐藏。",
+  "只用于「检查规则误判」的情况；真正的翻译问题请改上面的 fixes。"
+ ],
+ "accepted": {
+  "s000735": {
+   "codes": [
+    "example_untranslated_run"
+   ],
+   "reason": "例句刻意引用英语短语 in the morning，不是漏译。"
+  },
+  "s000819": {
+   "codes": [
+    "example_untranslated_run"
+   ],
+   "reason": "例句刻意引用英语句子 She likes cake，用来说明宾语，不是漏译。"
+  }
+ }
+}

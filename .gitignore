@@ -1,0 +1,45 @@
+# ── 依赖 ──────────────────────────────────────────────
+node_modules/
+
+# ── 构建产物 ───────────────────────────────────────────
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# ── 音频（按例句哈希命名，可由 pipeline/4_tts.py 重跑再生成）
+#    共 10197 个 mp3 / 185MB，不进版本库
+data/audio/
+
+# ── 运行时数据：学习记录与每日备份（本地资产，不上传）────
+data/backups/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# ── 日志与临时文件 ─────────────────────────────────────
+*.log
+dev-*.log
+temp_*.json
+volka-study-rootcause.html
+
+# ── Python ────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+pipeline/_work/
+.venv/
+venv/
+
+# ── 环境变量 ───────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── 编辑器 / 系统 ──────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.claude/settings.local.json

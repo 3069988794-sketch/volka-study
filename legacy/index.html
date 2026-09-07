@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volka English Study</title>
+  <style>
+    :root{
+      --bg:#f6f0e7;
+      --panel:#fffaf3;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --line:#e0d3c0;
+      --accent:#14532d;
+      --accent2:#9a3412;
+      --shadow:0 16px 42px rgba(31,41,55,.08);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Segoe UI","Microsoft YaHei",sans-serif;
+      color:var(--ink);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,0)),
+        radial-gradient(circle at top left, rgba(20,83,45,.08), transparent 34%),
+        radial-gradient(circle at top right, rgba(154,52,18,.08), transparent 30%),
+        var(--bg);
+    }
+    .app{display:grid; grid-template-columns:300px 1fr; min-height:100vh}
+    aside{
+      padding:20px 16px;
+      border-right:1px solid var(--line);
+      background:rgba(255,250,243,.74);
+      backdrop-filter:blur(10px);
+      position:sticky; top:0; height:100vh; overflow:auto;
+    }
+    main{padding:22px; max-width:1300px}
+    .brand h1{margin:0; font-size:25px; line-height:1.1}
+    .brand p{margin:10px 0 0; color:var(--muted); font-size:13px; line-height:1.6}
+    .meter{
+      margin:18px 0 18px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:rgba(255,255,255,.8);
+      box-shadow:var(--shadow);
+    }
+    .meter .big{font-size:28px; font-weight:700; color:var(--accent)}
+    .meter .small{font-size:12px; color:var(--muted); margin-top:4px}
+    .progress{width:100%; height:10px; border-radius:999px; background:#e9dfd0; overflow:hidden; border:1px solid var(--line); margin-top:12px}
+    .progress > div{height:100%; width:0%; background:linear-gradient(90deg, var(--accent), #2563eb)}
+    .group-title{margin:18px 0 10px; font-size:13px; font-weight:700; color:var(--muted); letter-spacing:0}
+    .days{display:flex; flex-direction:column; gap:8px}
+    .day-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:12px;
+      text-align:left;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .day-btn:hover{transform:translateY(-1px); box-shadow:var(--shadow)}
+    .day-btn.active{border-color:var(--accent); background:#eff7ef}
+    .day-btn .k{display:block; font-size:14px; font-weight:700}
+    .day-btn .s{display:block; margin-top:4px; color:var(--muted); font-size:12px; line-height:1.45}
+    .topbar{display:flex; justify-content:flex-end; gap:10px; margin-bottom:16px; flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .btn.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+    .btn.warn{background:var(--accent2); color:#fff; border-color:var(--accent2)}
+    .btn:disabled{opacity:.45; cursor:not-allowed}
+    .card{
+      background:rgba(255,250,243,.9);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .hero{padding:20px 22px}
+    .hero h2{margin:0; font-size:28px}
+    .hero p{margin:8px 0 0; color:var(--muted); line-height:1.65}
+    .grid{
+      display:grid;
+      grid-template-columns:1.3fr .7fr;
+      gap:18px;
+      margin-top:18px;
+    }
+    .panel{padding:18px 18px 12px}
+    .panel h3{margin:0 0 10px; font-size:18px}
+    .panel p.note{margin:0 0 14px; color:var(--muted); font-size:13px; line-height:1.65}
+    .list{display:flex; flex-direction:column; gap:12px; padding-bottom:12px}
+    .item{border:1px solid var(--line); border-radius:12px; background:#fff; overflow:hidden}
+    .item-head{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:10px;
+      align-items:center;
+      padding:14px 14px 10px;
+    }
+    .play{
+      width:38px; height:38px; border-radius:50%;
+      border:1px solid var(--line); background:#f4f7f4;
+      cursor:pointer; font-size:15px; font-weight:700;
+    }
+    .play.playing{background:var(--accent); color:#fff; border-color:var(--accent)}
+    .en{font-size:18px; line-height:1.45; font-weight:600}
+    .meta{font-size:12px; color:var(--muted); text-align:right}
+    .item-body{padding:0 14px 14px}
+    .toggle-cn{
+      border:1px solid #f1d9b0;
+      background:#fff8ea;
+      padding:4px 10px;
+      cursor:pointer;
+      color:var(--accent2);
+      font-weight:700;
+      font-size:12px;
+      border-radius:999px;
+    }
+    .cn{margin-top:8px; font-size:15px; line-height:1.7; color:#2c3440}
+    .sense-cn{margin-top:6px; color:#374151}
+    .preview-list{display:flex; flex-direction:column; gap:8px; margin-top:8px}
+    .preview-item{
+      padding:10px 12px;
+      border-radius:10px;
+      background:#fff;
+      border:1px solid #eadcc8;
+      line-height:1.55;
+      font-size:13px;
+    }
+    .preview-word{font-weight:700; color:var(--accent2)}
+    .preview-meta{font-size:12px; color:var(--muted); margin-top:2px}
+    .tip{
+      margin-top:10px;
+      font-size:12px;
+      color:#92400e;
+      background:#fff7e6;
+      border:1px solid #f1d9b0;
+      border-radius:10px;
+      padding:10px 12px;
+      line-height:1.6;
+    }
+    .hidden{display:none}
+    .word{
+      cursor:pointer;
+      border-bottom:1px dotted rgba(154,52,18,.45);
+      padding:0 1px;
+    }
+    .word.active{background:#fef3c7; border-bottom-color:transparent}
+    .stats{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
+    .stat{padding:14px; border:1px solid var(--line); border-radius:12px; background:#fff}
+    .stat .label{font-size:12px; color:var(--muted)}
+    .stat .value{font-size:20px; font-weight:700; margin-top:6px}
+    .footer{margin:18px 0 4px; font-size:12px; color:var(--muted); line-height:1.6}
+    .sticky-note{
+      margin-top:14px; padding:12px; border-radius:12px;
+      border:1px dashed #d7b58b; background:#fffaf0; font-size:12px; line-height:1.65; color:#7c2d12;
+    }
+    .error-banner{
+      display:none;
+      margin-bottom:18px;
+      padding:14px 16px;
+      border-radius:12px;
+      border:1px solid #f3c2a4;
+      background:#fff4ec;
+      color:#9a3412;
+      font-size:14px;
+      line-height:1.6;
+    }
+    @media (max-width: 980px){
+      .app{grid-template-columns:1fr}
+      aside{position:relative; height:auto; border-right:none; border-bottom:1px solid var(--line)}
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <h1>Volka English<br/>Study</h1>
+        <p>本地教材学习页。点击播放跟读，句子翻译需要手动展开，点单词能看局部解释，最多保留 3 个单词预览。</p>
+      </div>
+      <div class="meter">
+        <div class="big" id="dayLabel">Loading</div>
+        <div class="small" id="dayDesc">Preparing lessons...</div>
+        <div class="progress"><div id="progressBar"></div></div>
+      </div>
+      <div class="group-title">Lessons</div>
+      <div class="days" id="dayList"></div>
+      <div class="sticky-note">
+        请通过 <code>http://127.0.0.1:8000/</code> 打开。直接用 <code>file://</code> 会导致本地数据加载失败。
+      </div>
+    </aside>
+    <main>
+      <div class="error-banner" id="errorBanner"></div>
+      <div class="topbar">
+        <button class="btn primary" id="playAllBtn">播放本课</button>
+        <button class="btn" id="pauseBtn">暂停</button>
+        <button class="btn warn" id="resetBtn">重置进度</button>
+      </div>
+      <section class="card hero">
+        <h2 id="title">Volka English</h2>
+        <p id="subtitle">Loading textbook data...</p>
+      </section>
+      <section class="grid">
+        <div class="card panel">
+          <h3>Today's lines</h3>
+          <p class="note">先看英文。句子翻译与词义翻译分开，避免页面太满。词义预览最多保留 3 个。</p>
+          <div class="list" id="sentenceList"></div>
+        </div>
+        <div class="card panel">
+          <h3>Today's focus</h3>
+          <p class="note" id="focusText"></p>
+          <div class="stats">
+            <div class="stat"><div class="label">Items</div><div class="value" id="countSent">0</div></div>
+            <div class="stat"><div class="label">Minutes</div><div class="value">45</div></div>
+            <div class="stat"><div class="label">Done</div><div class="value" id="doneCount">0</div></div>
+            <div class="stat"><div class="label">Mode</div><div class="value">Listen + shadow</div></div>
+          </div>
+          <div class="footer">
+            建议节奏：先听一遍不看翻译，再点句子翻译，再点单词做局部理解，最后跟读播放。
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const DATA_URL = './data/volka-lessons.json';
+    const RAW_URL = './data/volka-raw.json';
+    const STORAGE_KEY = 'volka_study_progress_v1';
+    const SPEECH_RATE = 0.66;
+    const MAX_WORD_PREVIEWS = 3;
+
+    const els = {
+      dayLabel: document.getElementById('dayLabel'),
+      dayDesc: document.getElementById('dayDesc'),
+      progressBar: document.getElementById('progressBar'),
+      dayList: document.getElementById('dayList'),
+      title: document.getElementById('title'),
+      subtitle: document.getElementById('subtitle'),
+      focusText: document.getElementById('focusText'),
+      sentenceList: document.getElementById('sentenceList'),
+      countSent: document.getElementById('countSent'),
+      doneCount: document.getElementById('doneCount'),
+      playAllBtn: document.getElementById('playAllBtn'),
+      pauseBtn: document.getElementById('pauseBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      errorBanner: document.getElementById('errorBanner'),
+    };
+
+    const state = {
+      lessons: [],
+      currentIndex: 0,
+      playingIndex: -1,
+      activeWord: null,
+      progress: JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'),
+      wordDict: {},
+    };
+
+    function normalizeWord(word) {
+      return String(word || '').replace(/[’]/g, "'").replace(/^[^A-Za-z']+|[^A-Za-z']+$/g, '').toLowerCase();
+    }
+
+    function escapeHtml(text) {
+      return String(text ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderSentenceHTML(sentence) {
+      return escapeHtml(sentence).replace(/\b([A-Za-z']+)\b/g, (m) => {
+        const key = normalizeWord(m);
+        return `<span class="word" data-word="${key}">${m}</span>`;
+      });
+    }
+
+    function saveProgress() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
+    }
+
+    function markDone(lessonIndex, itemIndex) {
+      state.progress[lessonIndex] = state.progress[lessonIndex] || [];
+      if (!state.progress[lessonIndex].includes(itemIndex)) {
+        state.progress[lessonIndex].push(itemIndex);
+        saveProgress();
+      }
+    }
+
+    function currentLesson() {
+      return state.lessons[state.currentIndex];
+    }
+
+    function getPrimaryPage(lesson) {
+      return lesson?.pages?.[0] ?? 0;
+    }
+
+    function setTopLabels() {
+      const lesson = currentLesson();
+      if (!lesson) {
+        els.dayLabel.textContent = 'Loading';
+        els.dayDesc.textContent = 'Preparing lessons...';
+        return;
+      }
+      const page = getPrimaryPage(lesson);
+      els.dayLabel.textContent = `Page ${page}`;
+      els.dayDesc.textContent = `${lesson.cefr} · ${lesson.topic || 'General'}`;
+      els.title.textContent = `${lesson.cefr} - ${lesson.topic || 'Lesson'}`;
+      els.subtitle.textContent = `Pages ${lesson.pages[0]}-${lesson.pages[lesson.pages.length - 1]} · ${lesson.items.length} items`;
+      els.focusText.textContent = `This lesson block covers ${lesson.items.length} extracted entries.`;
+      els.countSent.textContent = lesson.items.length;
+      els.doneCount.textContent = state.progress[state.currentIndex]?.length || 0;
+      const total = lesson.items.length || 1;
+      const done = state.progress[state.currentIndex]?.length || 0;
+      els.progressBar.style.width = `${Math.min(100, (done / total) * 100)}%`;
+    }
+
+    function renderSidebar() {
+      els.dayList.innerHTML = '';
+      state.lessons.forEach((lesson, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'day-btn';
+        btn.innerHTML = `<span class="k">${lesson.cefr} · ${lesson.topic}</span><span class="s">Pages ${lesson.pages[0]}-${lesson.pages[lesson.pages.length - 1]} · ${lesson.items.length} items</span>`;
+        btn.addEventListener('click', () => {
+          state.currentIndex = idx;
+          state.playingIndex = -1;
+          renderCurrentLesson();
+        });
+        if (idx === state.currentIndex) btn.classList.add('active');
+        els.dayList.appendChild(btn);
+      });
+    }
+
+    function setActiveSidebar() {
+      [...els.dayList.children].forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === state.currentIndex);
+      });
+    }
+
+    function lessonItemHtml(item, idx) {
+      const mainText = item.display_en || item.headword || '';
+      const senses = Array.isArray(item.senses) ? item.senses : [];
+      const senseLine = senses.length
+        ? senses.map(s => `${escapeHtml(s.gloss_en || '')}${s.example_en ? ` · "${escapeHtml(s.example_en)}"` : ''}`).join('； ')
+        : '';
+      return `
+        <article class="item" data-index="${idx}">
+          <div class="item-head">
+            <button class="play" aria-label="play">▶</button>
+            <div class="en">${renderSentenceHTML(mainText)}</div>
+            <div class="meta">#${idx + 1}</div>
+          </div>
+          <div class="item-body">
+            <button class="toggle-cn" type="button">翻译</button>
+            <div class="cn hidden"></div>
+            <div class="preview-list hidden"></div>
+            <div class="tip">点句子下方按钮看整句解释。点英文单词做局部翻译；单词预览最多保留 3 个，句子翻译和单词翻译不会同时展开。</div>
+            <div class="sense-cn hidden">${escapeHtml(senseLine)}</div>
+          </div>
+        </article>
+      `;
+    }
+
+    function deriveSentenceTranslation(item) {
+      const cn = item.display_cn || '';
+      const senses = Array.isArray(item.senses) ? item.senses : [];
+      const examples = senses.map(s => s.example_en).filter(Boolean).slice(0, 2);
+      const pieces = [];
+      if (cn) pieces.push(cn);
+      if (examples.length) pieces.push(`例句：${examples.map(x => `"${x}"`).join('； ')}`);
+      return pieces.join('。');
+    }
+
+    function renderWordPreviewList(previewEl, words) {
+      previewEl.innerHTML = words.slice(0, MAX_WORD_PREVIEWS).map((word) => {
+        const data = state.wordDict[word] || { cn: '暂无收录', note: '先按上下文理解' };
+        return `
+          <div class="preview-item">
+            <div><span class="preview-word">${escapeHtml(word)}</span> · ${escapeHtml(data.cn || '暂无收录')}</div>
+            <div class="preview-meta">${escapeHtml(data.note || '')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showSentenceTranslation(itemEl, item, toggleBtn) {
+      const cnEl = itemEl.querySelector('.cn');
+      const previewEl = itemEl.querySelector('.preview-list');
+      const senseEl = itemEl.querySelector('.sense-cn');
+      previewEl.classList.add('hidden');
+      previewEl.innerHTML = '';
+      senseEl.classList.add('hidden');
+      cnEl.innerHTML = escapeHtml(deriveSentenceTranslation(item));
+      cnEl.classList.remove('hidden');
+      toggleBtn.textContent = '收起翻译';
+    }
+
+    function hideSentenceTranslation(itemEl, toggleBtn) {
+      itemEl.querySelector('.cn').classList.add('hidden');
+      itemEl.querySelector('.cn').innerHTML = '';
+      toggleBtn.textContent = '翻译';
+    }
+
+    function hideAllSentenceTranslations() {
+      document.querySelectorAll('.item').forEach((itemEl) => {
+        hideSentenceTranslation(itemEl, itemEl.querySelector('.toggle-cn'));
+        const previewEl = itemEl.querySelector('.preview-list');
+        previewEl.classList.add('hidden');
+        previewEl.innerHTML = '';
+        itemEl.querySelector('.sense-cn').classList.add('hidden');
+        itemEl.querySelectorAll('.word.active').forEach((w) => w.classList.remove('active'));
+      });
+    }
+
+    function addWordPreview(itemEl, word) {
+      const previewEl = itemEl.querySelector('.preview-list');
+      const current = JSON.parse(previewEl.dataset.words || '[]');
+      const next = [word, ...current.filter((w) => w !== word)].slice(0, MAX_WORD_PREVIEWS);
+      previewEl.dataset.words = JSON.stringify(next);
+      renderWordPreviewList(previewEl, next);
+      previewEl.classList.remove('hidden');
+    }
+
+    function renderCurrentLesson() {
+      const lesson = currentLesson();
+      if (!lesson) return;
+      setTopLabels();
+      setActiveSidebar();
+      els.sentenceList.innerHTML = lesson.items.map(lessonItemHtml).join('');
+      const doneSet = new Set(state.progress[state.currentIndex] || []);
+
+      els.sentenceList.querySelectorAll('.item').forEach((itemEl, idx) => {
+        const item = lesson.items[idx];
+        const playBtn = itemEl.querySelector('.play');
+        const toggleBtn = itemEl.querySelector('.toggle-cn');
+        const enEl = itemEl.querySelector('.en');
+        const cnEl = itemEl.querySelector('.cn');
+
+        if (doneSet.has(idx)) itemEl.style.borderColor = '#86efac';
+
+        enEl.addEventListener('click', (e) => {
+          const target = e.target.closest('.word');
+          if (!target) return;
+          const word = normalizeWord(target.dataset.word || target.textContent);
+          const sentenceVisible = !cnEl.classList.contains('hidden');
+          if (sentenceVisible) hideSentenceTranslation(itemEl, toggleBtn);
+          if (state.activeWord && state.activeWord !== target) state.activeWord.classList.remove('active');
+          target.classList.add('active');
+          state.activeWord = target;
+          addWordPreview(itemEl, word);
+          e.stopPropagation();
+        });
+
+        toggleBtn.addEventListener('click', () => {
+          const sentenceVisible = !cnEl.classList.contains('hidden');
+          if (sentenceVisible) {
+            hideSentenceTranslation(itemEl, toggleBtn);
+          } else {
+            hideAllSentenceTranslations();
+            showSentenceTranslation(itemEl, item, toggleBtn);
+          }
+        });
+
+        playBtn.addEventListener('click', () => {
+          speak(item.raw_text || item.display_en || '', () => {
+            markDone(state.currentIndex, idx);
+            state.playingIndex = -1;
+            renderCurrentLesson();
+          });
+          state.playingIndex = idx;
+          renderCurrentLesson();
+        });
+
+        if (state.playingIndex === idx) playBtn.classList.add('playing');
+      });
+
+      els.countSent.textContent = lesson.items.length;
+      els.doneCount.textContent = doneSet.size;
+      els.focusText.textContent = `${lesson.cefr} · ${lesson.topic} · ${lesson.items.length} entries`;
+      els.progressBar.style.width = `${Math.min(100, (doneSet.size / Math.max(lesson.items.length, 1)) * 100)}%`;
+    }
+
+    function speak(text, onend) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = SPEECH_RATE;
+      u.pitch = 1;
+      const voices = window.speechSynthesis.getVoices();
+      const chosen = voices.find(v => /Zira/i.test(v.name) && /en-US/i.test(v.lang)) || voices.find(v => /en-US/i.test(v.lang));
+      if (chosen) u.voice = chosen;
+      u.onend = onend || null;
+      window.speechSynthesis.speak(u);
+    }
+
+    function loadWordDict(rawData) {
+      const dict = {};
+      const defaults = {
+        drink: { cn: '喝；饮用', note: '最常见的动词之一' },
+        coffee: { cn: '咖啡', note: '饮品' },
+        morning: { cn: '早晨；上午', note: 'in the morning = 在早上' },
+        ready: { cn: '准备好的', note: 'be ready = 准备好了' },
+        train: { cn: '火车', note: '交通工具' },
+        photo: { cn: '照片', note: '拍摄出来的图像' },
+        table: { cn: '桌子', note: '家具' },
+        door: { cn: '门', note: '常见名词' },
+        home: { cn: '家；回家', note: '居住的地方' },
+        school: { cn: '学校', note: '学习场所' },
+        work: { cn: '工作', note: '也可表示上班' },
+      };
+      for (const e of rawData.entries || []) {
+        const w = (e.headword || '').trim();
+        if (!w) continue;
+        const key = w.toLowerCase();
+        if (!dict[key]) {
+          const gloss = (e.senses || []).map(s => s.gloss_cn).filter(Boolean).slice(0, 2).join('；');
+          dict[key] = { cn: gloss || e.display_cn || '', note: e.pos || '教材词条' };
+        }
+      }
+      return { ...dict, ...defaults };
+    }
+
+    function loadLessonsFromRaw(rawData) {
+      const lessons = [];
+      const byPage = new Map();
+      for (const e of rawData.entries || []) {
+        const key = `${e.cefr}|${e.page}`;
+        if (!byPage.has(key)) byPage.set(key, { page: e.page, cefr: e.cefr, topic: e.topic_section || 'General', items: [] });
+        const bucket = byPage.get(key);
+        if (e.raw_text && e.raw_text.length > 8) {
+          bucket.items.push({ headword: e.headword, raw_text: e.raw_text, page: e.page, cefr: e.cefr });
+        }
+      }
+      for (const v of byPage.values()) lessons.push(v);
+      lessons.sort((a, b) => a.page - b.page);
+      return lessons;
+    }
+
+    async function init() {
+      try {
+        const [rawRes, lessonsRes] = await Promise.all([
+          fetch(RAW_URL).then(r => r.json()),
+          fetch(DATA_URL).then(r => r.json()).catch(() => null),
+        ]);
+        state.wordDict = loadWordDict(rawRes);
+        state.lessons = lessonsRes?.lessons?.length ? lessonsRes.lessons : loadLessonsFromRaw(rawRes);
+        if (!state.lessons.length) throw new Error('No lessons loaded');
+        renderSidebar();
+        renderCurrentLesson();
+      } catch (err) {
+        els.title.textContent = 'Load failed';
+        els.subtitle.textContent = '请通过 http://127.0.0.1:8000/ 打开，而不是 file://';
+        els.focusText.textContent = '本地数据加载失败。';
+        els.errorBanner.style.display = 'block';
+        els.errorBanner.textContent = `Local data load failed: ${err}`;
+      }
+    }
+
+    els.playAllBtn.addEventListener('click', () => {
+      const lesson = currentLesson();
+      if (!lesson) return;
+      let i = 0;
+      const next = () => {
+        if (i >= lesson.items.length) {
+          state.playingIndex = -1;
+          renderCurrentLesson();
+          return;
+        }
+        const item = lesson.items[i];
+        state.playingIndex = i;
+        renderCurrentLesson();
+        speak(item.raw_text || item.display_en || '', () => {
+          markDone(state.currentIndex, i);
+          i += 1;
+          next();
+        });
+      };
+      next();
+    });
+
+    els.pauseBtn.addEventListener('click', () => {
+      window.speechSynthesis.cancel();
+      state.playingIndex = -1;
+      renderCurrentLesson();
+    });
+
+    els.resetBtn.addEventListener('click', () => {
+      if (confirm('要清空本地进度吗？')) {
+        localStorage.removeItem(STORAGE_KEY);
+        state.progress = {};
+        renderCurrentLesson();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.word')) {
+        if (state.activeWord) state.activeWord.classList.remove('active');
+        state.activeWord = null;
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>

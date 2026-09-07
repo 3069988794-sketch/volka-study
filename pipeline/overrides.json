@@ -1,0 +1,13 @@
+{
+ "_readme": [
+  "原书本身的错处在这里手工修，键是自然键 headword|pos|level|组内序号。",
+  "改这个文件不会动 sense_id：自然键不变，注册表里的 ID 就不变。",
+  "每条都要写 reason，说清楚原书是什么样、为什么这么改。"
+ ],
+ "senses": {
+  "themselves|pron.|B2|1": {
+   "example_en": "The students themselves planned the trip.",
+   "reason": "原书 page 106 印的是 \"The students themselves planned the trip to .\"，介词后面缺宾语。这里只删掉悬空的 to，不补造原书没有的信息。"
+  }
+ }
+}
